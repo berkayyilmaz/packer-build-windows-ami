@@ -1,0 +1,11 @@
+{   
+    "region": "eu-central-1",
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "token": "{{env `AWS_SESSION_TOKEN`}}",
+    "environment": "staging",
+    "secret_id": "staging/webserver/windows",
+    "iam_instance_profile": "{{env `IAM_INSTANCE_PROFILE`}}",
+    "winrm_username_env": "{{env `WEBSERVER_WINDOWS_USERNAME`}}",
+    "winrm_password_env": "{{env `WEBSERVER_WINDOWS_PASSWORD`}}"
+}

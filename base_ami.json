@@ -1,0 +1,45 @@
+  {
+    "sensitive-variables": ["aws_access_key", "aws_secret_key", "token", "winrm_username_env", "winrm_password_env"],
+
+    "builders": [{
+        "type"                : "amazon-ebs",
+        "access_key"          : "{{ user `aws_access_key` }}",
+        "secret_key"          : "{{ user `aws_secret_key` }}",
+        "token"               : "{{ user `token`}}",
+        
+        "region"              : "{{ user `region` }}",
+        "instance_type"       : "t2.micro",
+        "iam_instance_profile": "{{user `iam_instance_profile`}}",
+        "source_ami"          : "ami-034937fd7f621ba85",
+        "ami_name"            : "voidu-ami-packer--{{timestamp}}",
+        "winrm_username"      : "{{ user `winrm_username_env`}}",
+        "user_data_file"      : "./scripts/bootstrap_win.txt",
+        "communicator"        : "winrm",
+        "subnet_filter" : {
+          "filters": {
+            "tag:Class": "default"
+          },
+          "most_free"         : true,
+          "random"            : false
+        }
+    }],
+
+    "provisioners": [
+      {
+        "type"                : "windows-restart"
+      },
+
+      {
+        "script": "./scripts/scripts.ps1",
+        "type": "powershell"
+      },
+
+      {
+        "type": "powershell",
+        "environment_vars": ["WEBSERVER_WINDOWS_USERNAME={{ user `winrm_username_env`}}", "WEBSERVER_WINDOWS_PASSWORD={{ user `winrm_password_env`}}"],
+        "inline": [
+          "net user $Env:WEBSERVER_WINDOWS_USERNAME $Env:WEBSERVER_WINDOWS_PASSWORD"
+        ] 
+      }
+    ]
+  }
